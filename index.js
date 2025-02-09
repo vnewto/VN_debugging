@@ -8,6 +8,7 @@ const tooLowMessage = document.getElementById('too-low');
 const maxGuessesMessage = document.getElementById('max-guesses');
 const numberOfGuessesMessage = document.getElementById('number-of-guesses');
 const correctMessage = document.getElementById('correct');
+const invalidGuess = document.getElementById('invalid-guess');
 
 let targetNumber;
 let attempts = 0;
@@ -29,9 +30,11 @@ function hideAllMessages() {
   }
 }
 
-//unsure what this does
+hideAllMessages();
+
+//generate a random number between 1 and 99
 function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
@@ -39,9 +42,6 @@ function getRandomNumber(min, max) {
 function checkGuess() {
   // Get value from guess input element
   const guess = parseInt(guessInput.value, 10);
-
-  //increase attempts by one everytime someone guesses
-  attempts = attempts + 1;
 
   //start by hiding all the messages
   hideAllMessages();
@@ -59,10 +59,16 @@ function checkGuess() {
 
   //if the guess is incorrect... if it's too low, show the tooLow message. If it's too high, show the tooHigh message
   if (guess !== targetNumber) {
-    if (guess < targetNumber) {
+    if (guess < targetNumber && guess > 0 && guess < 100) {
       tooLowMessage.style.display = '';
-    } else {
+      //increase attempts by one everytime someone guesses
+      attempts = attempts + 1;
+    } else if (guess > targetNumber && guess > 0 && guess < 100) {
       tooHighMessage.style.display = '';
+      //increase attempts by one everytime someone guesses
+      attempts = attempts + 1;
+    } else {
+      invalidGuess.style.display = '';
     }
 
     const remainingAttempts = maxNumberOfAttempts - attempts;
@@ -70,12 +76,17 @@ function checkGuess() {
     //show how many attempts are left
     numberOfGuessesMessage.style.display = '';
     numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} guesses remaining`;
+    //if only one guess left, change message from "guesses" to "guess"
+    if (remainingAttempts === 1) {
+      numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} guess remaining`;
+    }
   }
 
   //If guessed 5 times, disable the submit button and input box
   if (attempts === maxNumberOfAttempts) {
     submitButton.disabled = true;
     guessInput.disabled = true;
+    attempts = 0;
   }
 
   guessInput.value = '';
@@ -93,7 +104,7 @@ function setup() {
   submitButton.disabled = false;
   guessInput.disabled = false;
 
-  hideAllMessages(messages);
+  hideAllMessages();
   resetButton.style.display = 'none';
 }
 
