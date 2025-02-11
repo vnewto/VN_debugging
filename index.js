@@ -49,7 +49,10 @@ function checkGuess() {
   //if the guess is correct, display the "correct" message and hide the submit button and guess box
   if (guess === targetNumber) {
     numberOfGuessesMessage.style.display = '';
-    numberOfGuessesMessage.innerHTML = `You made ${attempts} guesses`;
+    numberOfGuessesMessage.innerHTML = `You made ${attempts + 1} guesses`;
+      if (attempts + 1 === 1) {
+        numberOfGuessesMessage.innerHTML = `You made ${attempts + 1} guess`;
+      }
 
     correctMessage.style.display = '';
 
@@ -86,6 +89,8 @@ function checkGuess() {
   if (attempts === maxNumberOfAttempts) {
     submitButton.disabled = true;
     guessInput.disabled = true;
+    tooLowMessage.style.display = 'none';
+    tooHighMessage.style.display = 'none';
     attempts = 0;
   }
 
